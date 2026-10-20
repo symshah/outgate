@@ -1,0 +1,11 @@
+bin/
+obj/
+*.user
+.vs/
+*.suo
+
+# GeoIP database (~122 MB, DB-IP City Lite, CC BY 4.0): not committed — see README
+assets/geoip/*.mmdb
+
+# Local Windows shortcut
+*.lnk

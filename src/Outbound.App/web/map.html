@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Outbound — map</title>
+<link rel="stylesheet" href="leaflet.css"/>
+<style>
+  :root { --bg:#141518; --panel:#1d1f24; --text:#e6e8ee; --muted:#9aa0ad; --accent:#4da3ff; --danger:#ef4444; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--text);
+    font-family:"Segoe UI",system-ui,sans-serif; font-size:13px; user-select:none; }
+  #top { display:flex; align-items:center; gap:8px; padding:6px 10px; border-bottom:1px solid #2a2d34; position:relative; z-index:1000; }
+  #top .seg { display:flex; border:1px solid #3a3e47; border-radius:6px; overflow:hidden; }
+  #top .seg button { background:transparent; color:var(--muted); border:0; padding:4px 12px; cursor:pointer; font-size:12.5px; }
+  #top .seg button.on { background:#31465f; color:#fff; }
+  #top .spacer { flex:1; }
+  #top .stat { color:var(--muted); font-size:12px; }
+  #main { display:flex; height:calc(100% - 34px - 96px); position:relative; }
+  #viz { flex:1; position:relative; min-width:0; background:#0a0d13; }
+  #viz .globe-canvas { position:absolute; inset:0; overflow:hidden; }
+  #side { width:230px; border-left:1px solid #2a2d34; overflow-y:auto; padding:8px; }
+  #side h3 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:6px; }
+  .place { display:flex; justify-content:space-between; gap:6px; padding:5px 6px; border-radius:6px; cursor:pointer; }
+  .place:hover, .place.sel { background:#2a3140; }
+  .place .nm { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .place .sub { color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .place .by { color:var(--accent); font-weight:600; white-space:nowrap; }
+  .place .blk { color:var(--danger); font-weight:700; font-size:11px; }
+  #chartwrap { height:96px; border-top:1px solid #2a2d34; position:relative; padding:4px 8px 6px; }
+  #chart { width:100%; height:78px; display:block; cursor:crosshair; }
+  #rangeNote { position:absolute; top:4px; right:10px; font-size:11px; color:var(--muted); }
+  .tip { position:absolute; pointer-events:none; background:#0c0d10f2; border:1px solid #3a3e47; border-radius:6px;
+    padding:5px 8px; font-size:12px; display:none; z-index:1200; max-width:260px; }
+  .scene-tooltip { color:#e6e8ee !important; font-size:12px !important; opacity:1 !important; background:#0c0d10dd !important; padding:4px 8px; border-radius:6px; max-width:260px; }
+
+  /* ---- Leaflet, offline: bundled raster imagery, no tiles fetched from the internet ---- */
+  .leaflet-container { background:#0a0d13; font:inherit; outline:none; }
+  .leaflet-control-zoom a { background:#1d1f24; color:#e6e8ee; border-color:#3a3e47; }
+  .leaflet-control-zoom a:hover { background:#2a3140; }
+  .raster-satellite { filter:brightness(0.74) saturate(1.05) contrast(1.03); }
+  .raster-standard  { filter:brightness(1.02) saturate(0.95); }
+  .raster-muted     { filter:grayscale(0.8) brightness(0.52) contrast(0.92); }
+  .country-line path { vector-effect:non-scaling-stroke; }
+  .leaflet-tooltip.city-label { background:transparent; border:0; box-shadow:none; color:#e2e9f5; font-size:11px;
+    font-weight:600; text-shadow:0 1px 3px #000, 0 0 8px #000a; padding:0; }
+  .leaflet-tooltip.city-label::before { display:none; }
+  .leaflet-tooltip.dot-tip { background:#0c0d10f2; border:1px solid #3a3e47; color:#e6e8ee; font-size:12px;
+    border-radius:6px; padding:5px 8px; }
+  .leaflet-tooltip.dot-tip::before { display:none; }
+  .origin-marker { background:transparent; border:0; }
+  .origin-dot { width:26px; height:26px; border-radius:50%; background:#2f8fe6; border:2px solid #cfe6ff;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px #2f8fe633, 0 2px 6px #0009; }
+  .origin-dot svg { width:15px; height:15px; }
+  .city-label-wrap { background:transparent; border:0; }
+  .city-label-text { display:inline-block; transform:translate(0,-50%); color:#e6edf9; font-size:11px; font-weight:600;
+    white-space:nowrap; text-shadow:0 1px 3px #000, 0 0 8px #000b; pointer-events:none; }
+
+  /* ---- app theme: Midnight (Settings › Appearance) = navy map background ---- */
+  body.midnight { background:#0B1322; }
+  body.midnight #top { border-bottom-color:#22314D; }
+  body.midnight #side { border-left-color:#22314D; }
+  body.midnight #chartwrap { border-top-color:#22314D; }
+  body.midnight .place:hover, body.midnight .place.sel { background:#1A2740; }
+  body.midnight .place .by { color:#3B82F6; }
+  body.midnight .leaflet-container { background:#0B1322; }
+  body.midnight img.leaflet-image-layer { filter:brightness(0.66) saturate(1.04) contrast(1.02); }
+  body.midnight .leaflet-control-zoom a { background:#0E1729; color:#E8EEF7; border-color:#22314D; }
+  /* ---- app theme: Aurora (default) — dark ink map, glass overlays ---- */
+  body.aurora { background:#0D0F1A; }
+  body.aurora #top, body.aurora #side, body.aurora #chartwrap {
+    background:rgba(22,26,43,0.55); backdrop-filter:blur(18px) saturate(160%); border-color:#262B42; }
+  body.aurora .place:hover, body.aurora .place.sel { background:#1B1F33; }
+  body.aurora .place .by { color:#34D399; }
+  body.aurora .leaflet-container { background:#0D0F1A; }
+  body.aurora img.leaflet-image-layer { filter:brightness(0.62) saturate(0.92) contrast(1.03); }
+  body.aurora .leaflet-control-zoom a { background:rgba(22,26,43,0.75); color:#ECEEF7; border-color:#262B42; }
+  /* night sky behind the 3D globe */
+  .globe-canvas { background:#04060c; background-image:
+    radial-gradient(1px 1px at 20% 30%, #ffffff88 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 15%, #ffffff66 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 45% 65%, #ffffff55 50%, transparent 51%),
+    radial-gradient(1px 1px at 85% 55%, #ffffff77 50%, transparent 51%),
+    radial-gradient(1px 1px at 12% 78%, #ffffff55 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 62% 88%, #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 33% 8%, #ffffff66 50%, transparent 51%); }
+</style>
+</head>
+<body>
+<div id="top">
+  <div class="seg"><button id="btn2d" class="on">2D map</button><button id="btn3d">3D globe</button></div>
+  <div class="seg" id="styleSeg">
+    <button data-style="satellite" class="on">Satellite</button>
+    <button data-style="standard">Standard</button>
+    <button data-style="muted">Muted</button>
+  </div>
+  <div class="spacer"></div>
+  <span class="stat" id="stat">waiting for data…</span>
+</div>
+<div id="main">
+  <div id="viz"></div>
+  <div class="tip" id="tip"></div>
+  <div id="side"><h3>Top places</h3><div id="places"></div></div>
+</div>
+<div id="chartwrap"><canvas id="chart"></canvas><span id="rangeNote">drag across the chart to filter map + list</span></div>
+<script src="d3-array.min.js"></script>
+<script src="d3-geo.min.js"></script>
+<script src="topojson-client.min.js"></script>
+<script src="leaflet.js"></script>
+<script src="globe.gl.min.js"></script>
+<script src="map.js"></script>
+</body>
+</html>

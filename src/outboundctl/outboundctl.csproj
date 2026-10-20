@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Outbound.Ctl</RootNamespace>
+    <AssemblyName>outboundctl</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Outbound.Core\Outbound.Core.csproj" />
+    <!-- build-order only: ensures outbound-mcp is built before we copy its exe -->
+    <ProjectReference Include="..\outbound-mcp\outbound-mcp.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <!-- `outboundctl mcp` launches outbound-mcp.exe from next to outboundctl (stdio MCP server) -->
+  <Target Name="CopyOutboundMcpExe" AfterTargets="Build">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\outbound-mcp\bin\$(Configuration)\net8.0\outbound-mcp.exe;$(MSBuildThisFileDirectory)..\outbound-mcp\bin\$(Configuration)\net8.0\outbound-mcp.dll"
+          DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" ContinueOnError="true" />
+  </Target>
+
+</Project>

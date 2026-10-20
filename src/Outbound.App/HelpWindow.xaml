@@ -1,0 +1,18 @@
+<Window x:Class="Outbound.App.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="OutGate — Network not working?"
+        Width="520" Height="420" ShowActivated="False" Topmost="True"
+        FontFamily="{StaticResource UiFont}">
+    <StackPanel Margin="18">
+        <TextBlock Text="Network not working?" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,6"/>
+        <TextBlock x:Name="StateLine" TextWrapping="Wrap" Margin="0,2,0,12"
+                   Text="Check the protection state below. If OutGate is blocking something you need, pause it, allow the app, or turn it off."/>
+        <TextBlock x:Name="Body" TextWrapping="Wrap" FontSize="13"/>
+        <Button x:Name="BtnPause" Content="Pause 15 min" Padding="14,6" Margin="0,16,0,4"/>
+        <Button x:Name="BtnOff" Content="Turn off" Padding="14,6" Margin="0,6,0,4"/>
+        <Button x:Name="BtnClose" Content="Close" Padding="14,6" Margin="0,6,0,0"/>
+        <TextBlock Style="{StaticResource Caption}" TextWrapping="Wrap" Margin="0,14,0,0"
+                   Text="Fonts: Plus Jakarta Sans (UI) and JetBrains Mono (numbers) — SIL Open Font License 1.1, see Fonts/OFL.txt. Map imagery: NASA Blue Marble and Natural Earth II (public domain). Offline city list: Natural Earth."/>
+    </StackPanel>
+</Window>

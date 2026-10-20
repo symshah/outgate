@@ -1,0 +1,32 @@
+<Window x:Class="Outbound.App.ApprovalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lucide="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        Title="OutGate — approve rule change"
+        Width="500" SizeToContent="Height" Topmost="True" WindowStartupLocation="CenterScreen"
+        FontFamily="{StaticResource UiFont}">
+    <StackPanel Margin="16">
+        <TextBlock Text="An AI agent (MCP) is requesting a firewall rule change:" FontWeight="SemiBold"/>
+        <!-- SPEC-GLASS G2: glass row (radius 6 kept — tight code block) -->
+        <Border Style="{StaticResource GlassRow}" CornerRadius="6" Padding="10" Margin="0,8,0,0">
+            <TextBlock x:Name="DescText" TextWrapping="Wrap" FontFamily="Consolas"/>
+        </Border>
+        <TextBlock x:Name="CountdownLine" Margin="0,8,0,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button x:Name="BtnDeny" Style="{StaticResource GlassCoralButton}" Click="Deny_Click" IsDefault="False" IsCancel="False">
+                <StackPanel Orientation="Horizontal">
+                    <lucide:PackIconLucide Kind="Ban" Width="15" Height="15" Margin="0,0,8,0" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource GlassCoralTextBrush}"/>
+                    <TextBlock Text="Deny"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="BtnApprove" Style="{StaticResource GlassMintButton}" Margin="8,0,0,0" Click="Approve_Click" IsDefault="False" IsCancel="False">
+                <StackPanel Orientation="Horizontal">
+                    <lucide:PackIconLucide Kind="Check" Width="15" Height="15" Margin="0,0,8,0" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource GlassMintTextBrush}"/>
+                    <TextBlock Text="Approve"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</Window>

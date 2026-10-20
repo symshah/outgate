@@ -1,0 +1,166 @@
+<!--
+  SPEC-GLASS G2 — the glass card system, defined once and used everywhere.
+
+  Layer order (bottom to top): cached blurred aurora snapshot, translucent
+  vertical fill gradient, 1px specular edge, 1px inner top highlight, content.
+  Shadows are card-only — rows and pills get none. Radius: 18 cards, 12 rows,
+  capsule (h/2) pills.
+
+  Every resource key used here (GlassFillGradient, GlassEdgeGradient,
+  GlassTopHighlightBrush, GlassAuroraBackdropBrush, GlassCardShadow) exists in
+  all four theme palettes (Light, Graphite, Midnight, Aurora).
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Layers 1-3 in one brush: aurora image, fill gradient, inner top highlight.
+         A Border is not a Control, so the glass layers live in a DrawingBrush,
+         not a template. -->
+    <DrawingBrush x:Key="GlassBackgroundBrush" Stretch="UniformToFill">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="{DynamicResource GlassAuroraBackdropBrush}">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,1,1"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="{DynamicResource GlassFillGradient}">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,1,1"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="{DynamicResource GlassTopHighlightBrush}">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,1,0.015"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+
+    <!-- Full glass card: radius 18, specular edge, card-only shadow. -->
+    <Style x:Key="GlassCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource GlassBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GlassEdgeGradient}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="18"/>
+        <Setter Property="Padding" Value="14,12"/>
+        <Setter Property="Effect" Value="{DynamicResource GlassCardShadow}"/>
+    </Style>
+
+    <!-- Glass row: radius 12, no shadow (shadows are card-only). -->
+    <Style x:Key="GlassRow" TargetType="Border" BasedOn="{StaticResource GlassCard}">
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="Effect" Value="{x:Null}"/>
+    </Style>
+
+    <!-- Glass pill: capsule (h/2 of the standard 34px pill), no shadow. -->
+    <Style x:Key="GlassPill" TargetType="Border" BasedOn="{StaticResource GlassCard}">
+        <Setter Property="CornerRadius" Value="17"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Effect" Value="{x:Null}"/>
+    </Style>
+
+    <!-- ===== G3: floating glass capsule (MainWindow top bar) ===== -->
+    <!-- Full glass layers + card shadow = a "floating" surface. Hosts the status pill
+         and the grouped toolbar icon buttons. Radius/padding are overridden per use
+         (status pill is shorter; the icon group is a wide capsule). -->
+    <Style x:Key="GlassToolbarCapsule" TargetType="Border" BasedOn="{StaticResource GlassCard}">
+        <Setter Property="CornerRadius" Value="18"/>
+        <Setter Property="Padding" Value="4,3"/>
+    </Style>
+
+    <!-- ===== G3: glass search capsule (shared by every search box) ===== -->
+    <!-- Full glass layers, capsule radius, no shadow (search is a flat surface, not
+         a floating card). Hosts a Lucide magnifier icon + textbox. -->
+    <Style x:Key="GlassSearchCapsule" TargetType="Border" BasedOn="{StaticResource GlassCard}">
+        <Setter Property="CornerRadius" Value="17"/>
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="Effect" Value="{x:Null}"/>
+    </Style>
+
+    <!-- G3: glass segmented-control TRACK (capsule) — the recessed channel a row of
+         option buttons sits in, with a sliding "liquid" thumb behind them. -->
+    <Style x:Key="GlassSegTrack" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource GlassSegTrackBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GlassEdgeGradient}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="15"/>
+        <Setter Property="Padding" Value="3"/>
+    </Style>
+
+    <!-- G3: the brighter "liquid" selection THUMB that slides to the chosen option
+         (GlassSeg.SlideTo animates its Margin, ~250 ms BackEase, off when
+         SystemParameters.ClientAreaAnimation is off). Single element, so a light
+         DropShadow is cheap here. -->
+    <Style x:Key="GlassSegThumb" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource GlassSegThumbBrush}"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" BlurRadius="6" ShadowDepth="1" Opacity="0.35"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== G3: tinted glass buttons ===== -->
+    <!-- Shared glass chrome: rounded border + tinted background (set per variant) + hover/press/disabled.
+         Foreground is inherited by text; icons set their own Foreground in the button content. -->
+    <Style x:Key="GlassButtonBase" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource GlassPrimaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="Padding" Value="14,7"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bd" CornerRadius="9" SnapsToDevicePixels="True"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource GlassEdgeGradient}" BorderThickness="1"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" Opacity="0.18" BlurRadius="10" ShadowDepth="1" Direction="270"/>
+                        </Border.Effect>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Opacity" Value="0.92"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bd" Property="Opacity" Value="0.78"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Primary action: accent-tinted glass -->
+    <Style x:Key="GlassPrimaryButton" TargetType="Button" BasedOn="{StaticResource GlassButtonBase}">
+        <Setter Property="Background" Value="{DynamicResource GlassPrimaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+    </Style>
+
+    <!-- Allow / Approve: mint-tinted glass + mint icon & text -->
+    <Style x:Key="GlassMintButton" TargetType="Button" BasedOn="{StaticResource GlassButtonBase}">
+        <Setter Property="Background" Value="{DynamicResource GlassMintBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource GlassMintTextBrush}"/>
+    </Style>
+
+    <!-- Block / Deny: coral-tinted glass + coral icon & text -->
+    <Style x:Key="GlassCoralButton" TargetType="Button" BasedOn="{StaticResource GlassButtonBase}">
+        <Setter Property="Background" Value="{DynamicResource GlassCoralBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource GlassCoralTextBrush}"/>
+    </Style>
+</ResourceDictionary>

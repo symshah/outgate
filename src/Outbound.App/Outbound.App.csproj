@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Outbound.App</RootNamespace>
+    <AssemblyName>Outbound</AssemblyName>
+    <!-- requireAdministrator + PerMonitorV2 DPI (see app.manifest). Without this the app ran
+         unelevated, real-time ETW was unavailable and every byte count read 0. -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 3.4.2.7 no longer resolves on NuGet (NU1603); 4.0.0 is the current stable and keeps the same theme API -->
+    <PackageReference Include="WPF-UI" Version="4.0.0" />
+    <!-- 2.4.1 dropped the net8.0 target (net10/net462 only → NU1701); 2.3.2 is the last with net8.0-windows7.0 -->
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.3.2" />
+    <!-- Sparklines on the Activity page (SPEC Phase 3: ScottPlot or LiveCharts2) -->
+    <PackageReference Include="ScottPlot.WPF" Version="5.*" />
+    <!-- SPEC-GLASS 1.2: Lucide icon pack (net8.0-windows7.0, verified on nuget.org) -->
+    <PackageReference Include="MahApps.Metro.IconPacks.Lucide" Version="6.2.1" />
+    <!-- Offline map/globe host for Phase 4 (WebView2 runtime ships with Windows 10/11).
+         1.0.2973.100 is no longer on NuGet (NU1603 — it silently resolved to 1.0.3065.39 anyway). -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bundled offline web assets for the Map page (d3-geo, topojson, world-atlas, globe.gl) -->
+    <None Include="web\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Offline city list for Settings › Location (Natural Earth populated places) -->
+    <None Include="assets\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bundled fonts (SIL OFL 1.1): static TTFs, Build Action = Resource, referenced as
+         pack://application:,,,/Fonts/#<family>. Static files carry weight-suffixed family names
+         (e.g. "Plus Jakarta Sans SemiBold"), so each weight is its own FontFamily.
+         The SDK's default None/Content globs claim these files first, so remove them before
+         adding the Resource items — otherwise they are silently left out of the .g.resources
+         and every FontFamily falls back to the system font. -->
+    <None Remove="Fonts\**\*" />
+    <Content Remove="Fonts\**\*" />
+    <Resource Include="Fonts\**\*.ttf" />
+    <Resource Include="Fonts\**\*.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Outbound.Core\Outbound.Core.csproj" />
+  </ItemGroup>
+
+</Project>

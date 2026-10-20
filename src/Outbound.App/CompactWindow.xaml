@@ -1,0 +1,231 @@
+<Window x:Class="Outbound.App.CompactWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:lucide="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Activity" Width="800" Height="650" MinWidth="560" MinHeight="420"
+        WindowStartupLocation="Manual" ShowInTaskbar="True"
+        Background="{DynamicResource GlassFillGradient}"
+        BorderBrush="{DynamicResource GlassEdgeGradient}" BorderThickness="1"
+        FontFamily="{StaticResource UiFont}"
+        TextOptions.TextFormattingMode="Ideal">
+    <shell:WindowChrome.WindowChrome>
+        <!-- Borderless glass card: we own the drag (header strip) and the resize borders.
+             SPEC-GLASS G2: radius 18 (card shape). -->
+        <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="18" UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <Style x:Key="Chip" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource AppChipBackgroundBrush}"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="Margin" Value="6,0,0,0"/>
+        </Style>
+        <Style x:Key="ChipText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource AppChipTextBrush}"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="IconTile" TargetType="Border">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Background" Value="{DynamicResource AppIconTileBrush}"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- header -->
+            <RowDefinition Height="*"/>      <!-- rows   -->
+        </Grid.RowDefinitions>
+
+        <!-- ===== header (drag area) ===== -->
+        <Grid Grid.Row="0" x:Name="HeaderStrip" Background="Transparent" Margin="16,14,12,10"
+              MouseLeftButtonDown="Header_MouseLeftButtonDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock Text="Activity" FontSize="20" FontWeight="Bold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <Ellipse Width="8" Height="8" VerticalAlignment="Center" Fill="{DynamicResource AppGreenBrush}"/>
+                    <TextBlock x:Name="SeenTodayText" Margin="7,0,0,0" FontSize="12.5"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="0 seen today"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- search pill (SPEC-GLASS G2 glass capsule + G3 Lucide magnifier, shared GlassSearchCapsule style) -->
+            <Border Grid.Column="1" x:Name="SearchPill" VerticalAlignment="Center"
+                    Style="{StaticResource GlassSearchCapsule}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <lucide:PackIconLucide Kind="Search" Width="15" Height="15"
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                    <TextBox x:Name="TxtSearch" Width="190" Margin="8,0,0,0" BorderThickness="0" Background="Transparent"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalContentAlignment="Center"
+                             TextChanged="TxtSearch_TextChanged"/>
+                    <TextBlock x:Name="SearchPlaceholder" Text="Apps, hosts or ports" FontSize="12.5" Margin="-182,0,0,0"
+                               VerticalAlignment="Center" IsHitTestVisible="False"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                <Button x:Name="BtnPin" Click="BtnPin_Click" Width="30" Height="30" Padding="0" Background="Transparent"
+                        BorderThickness="0" ToolTip="Always on top" AutomationProperties.Name="Keep on top">
+                    <ui:SymbolIcon Symbol="Pin24" FontSize="15"/>
+                </Button>
+                <Button x:Name="BtnClose" Click="BtnClose_Click" Width="30" Height="30" Padding="0" Background="Transparent"
+                        BorderThickness="0" ToolTip="Close" AutomationProperties.Name="Close">
+                    <ui:SymbolIcon Symbol="Dismiss24" FontSize="15"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- ===== rows (bottom fades out) ===== -->
+        <ScrollViewer Grid.Row="1" x:Name="Scroller" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      Padding="10,0,10,14" Margin="0,0,0,1">
+            <ScrollViewer.OpacityMask>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                    <GradientStop Color="#FFFFFFFF" Offset="0.92"/>
+                    <GradientStop Color="#00FFFFFF" Offset="1"/>
+                </LinearGradientBrush>
+            </ScrollViewer.OpacityMask>
+            <ItemsControl x:Name="RowsHost">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="RowBorder" CornerRadius="10" Margin="0,1" Padding="8,7">
+                            <Border.Style>
+                                <!-- SPEC-GLASS G2: glass rows (no shadow) -->
+                                <Style TargetType="Border" BasedOn="{StaticResource GlassRow}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource GlassTopHighlightBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- app icon in a white rounded tile -->
+                                <Border Grid.Column="0" Style="{StaticResource IconTile}" VerticalAlignment="Center">
+                                    <Image Source="{Binding Icon}" Stretch="Uniform" Margin="6"/>
+                                </Border>
+
+                                <!-- host (main domain bold) + app · port chip · country city -->
+                                <StackPanel Grid.Column="1" Margin="12,0,8,0" VerticalAlignment="Center">
+                                    <TextBlock FontSize="14.5" TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+                                        <Run Text="{Binding HostPrefix, Mode=OneWay}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/><Run
+                                             Text="{Binding HostMain, Mode=OneWay}" FontWeight="Bold"/><Run
+                                             Text="{Binding HostSuffix, Mode=OneWay}"/>
+                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                        <TextBlock Text="{Binding AppName}" FontSize="12.5"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" VerticalAlignment="Center"/>
+                                        <Border Style="{StaticResource Chip}">
+                                            <TextBlock Style="{StaticResource ChipText}" FontFamily="{StaticResource MonoFont}" Text="{Binding PortProto}"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding CountryCity}" Margin="8,0,0,0" FontSize="12" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- time since last seen -->
+                                <TextBlock Grid.Column="2" Text="{Binding Ago}" VerticalAlignment="Center" Margin="8,0,10,0"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12.5"/>
+
+                                <!-- decision pill: ✕ | ✓ (SPEC-GLASS G2: glass track) -->
+                                <Border Grid.Column="3" x:Name="Pill" CornerRadius="14" Padding="2" VerticalAlignment="Center"
+                                        Background="{DynamicResource GlassFillGradient}"
+                                        BorderBrush="{DynamicResource GlassEdgeGradient}" BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Click="Block_Click" Width="28" Height="28" Padding="0"
+                                                Background="Transparent" BorderThickness="0" ToolTip="Block this host for this app"
+                                                Tag="{Binding}">
+                                            <Border CornerRadius="12" Background="{DynamicResource GlassCoralBrush}">
+                                                <Grid>
+                                                    <Ellipse x:Name="BlockFill" Width="26" Height="26" Fill="Transparent" Opacity="0"/>
+                                                    <TextBlock x:Name="BlockGlyph" Text="✕" FontSize="13" FontWeight="Bold"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource GlassCoralTextBrush}"/>
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                        <Button Click="Allow_Click" Width="28" Height="28" Padding="0"
+                                                Background="Transparent" BorderThickness="0" ToolTip="Allow this host for this app"
+                                                Tag="{Binding}">
+                                            <Border CornerRadius="12" Background="{DynamicResource GlassMintBrush}">
+                                                <Grid>
+                                                    <Ellipse x:Name="AllowFill" Width="26" Height="26" Fill="Transparent" Opacity="0"/>
+                                                    <TextBlock x:Name="AllowGlyph" Text="✓" FontSize="13" FontWeight="Bold"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource GlassMintTextBrush}"/>
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <!-- waiting for my answer: orange pill outline, lighter row -->
+                            <DataTrigger Binding="{Binding Decision}" Value="Waiting">
+                                <Setter TargetName="Pill" Property="BorderBrush" Value="{DynamicResource AppOrangeBrush}"/>
+                                <Setter TargetName="Pill" Property="BorderThickness" Value="1.5"/>
+                            </DataTrigger>
+                            <!-- allowed: ✓ side fills green -->
+                            <DataTrigger Binding="{Binding Decision}" Value="Allowed">
+                                <Setter TargetName="AllowFill" Property="Fill" Value="{DynamicResource AppGreenBrush}"/>
+                                <Setter TargetName="AllowGlyph" Property="Foreground" Value="White"/>
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="AllowFill" Storyboard.TargetProperty="Opacity"
+                                                             To="1" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                            <!-- blocked: ✕ side fills red -->
+                            <DataTrigger Binding="{Binding Decision}" Value="Blocked">
+                                <Setter TargetName="BlockFill" Property="Fill" Value="{DynamicResource AppRedBrush}"/>
+                                <Setter TargetName="BlockGlyph" Property="Foreground" Value="White"/>
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="BlockFill" Storyboard.TargetProperty="Opacity"
+                                                             To="1" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <TextBlock x:Name="EmptyText" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   Text="Nothing yet — connections show up here as they happen."/>
+    </Grid>
+</Window>

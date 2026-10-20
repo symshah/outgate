@@ -1,0 +1,108 @@
+<UserControl x:Class="Outbound.App.TrayFlyout"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             Width="310">
+    <UserControl.Resources>
+        <Style x:Key="FlyoutCard" TargetType="Border">
+            <!-- SPEC-GLASS G2: glass panel (radius 12 row shape, no shadow — it is a window) -->
+            <Setter Property="Background" Value="{DynamicResource GlassFillGradient}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource GlassEdgeGradient}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
+        <!-- G3: transparent segment option button — the glass thumb provides the
+             "selected" visual, so the button itself carries no chrome. -->
+        <Style x:Key="SegButton" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Status line -->
+        <TextBlock x:Name="StatusLine" Grid.Row="0" Text="OutGate is on · Checking every connection"
+                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="14" FontWeight="SemiBold"/>
+
+        <!-- Mode segmented switch (G3 glass: recessed track + sliding "liquid" thumb) -->
+        <Border Grid.Row="1" Style="{StaticResource GlassSegTrack}" Margin="0,10,0,0">
+            <Grid x:Name="ModeSegHost">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Sliding thumb (behind the buttons); GlassSeg.SlideTo moves it -->
+                <Border x:Name="ModeThumb" Grid.ColumnSpan="3" Style="{StaticResource GlassSegThumb}"
+                        HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="ModeThumbX"/>
+                    </Border.RenderTransform>
+                </Border>
+                <ToggleButton x:Name="ModeLearn"  Grid.Column="0" Style="{StaticResource SegButton}" Content="Learn"/>
+                <ToggleButton x:Name="ModeAsk"    Grid.Column="1" Style="{StaticResource SegButton}" Content="Ask"/>
+                <ToggleButton x:Name="ModeStrict" Grid.Column="2" Style="{StaticResource SegButton}" Content="Strict"/>
+            </Grid>
+        </Border>
+
+        <!-- Counts -->
+        <TextBlock x:Name="CountsLine" Grid.Row="2" Text="0 apps · 0 allowed · 0 blocked"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12" Margin="0,8,0,0"/>
+
+        <!-- Recent list -->
+        <Border Grid.Row="3" Style="{StaticResource FlyoutCard}" Padding="10,8" Margin="0,10,0,0">
+            <StackPanel>
+                <TextBlock Text="Recent connections" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                <ItemsControl x:Name="RecentList" MaxHeight="150" Margin="0,6,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <TextBlock Text="{Binding Mark}" Width="18" FontSize="13"/>
+                                <TextBlock Text="{Binding AppName}" Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                           FontSize="12" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Host}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                           FontSize="12" Margin="6,0,0,0" MaxWidth="130" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <!-- Actions -->
+        <Grid Grid.Row="5" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ui:Button x:Name="BtnOpen" Grid.Column="0" Content="Open OutGate" Margin="0,0,8,0"/>
+            <ui:Button x:Name="BtnCompact" Grid.Column="1" Content="Activity feed" Padding="12,5" Margin="0,0,4,0"/>
+            <ui:Button x:Name="BtnPause" Grid.Column="2" Content="Pause 15 min" Padding="12,5" Margin="0,0,4,0"/>
+            <ui:Button x:Name="BtnOff" Grid.Column="3" Content="Turn off" Padding="12,5"/>
+        </Grid>
+    </Grid>
+</UserControl>

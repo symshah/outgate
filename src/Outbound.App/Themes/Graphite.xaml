@@ -1,0 +1,89 @@
+<!--
+  Graphite — the app's existing dark look ("Dark" in Settings › Appearance).
+  Stock WPF-UI keys (backgrounds, cards, text) come from WPF-UI's own Dark theme, so the
+  approved look is untouched; this dictionary supplies the app's own keys, which Midnight
+  also overrides. Same key set as Light.xaml / Midnight.xaml.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="AppWindowBorderBrush" Color="#00000000"/>
+    <SolidColorBrush x:Key="AppWindowBackgroundBrush" Color="#202020"/>
+    <SolidColorBrush x:Key="AppCardBackgroundBrush" Color="#313131"/>
+    <SolidColorBrush x:Key="AppCardBorderBrush" Color="#3A3A3A"/>
+    <SolidColorBrush x:Key="AppSidebarBackgroundBrush" Color="#1C1C1C"/>
+    <SolidColorBrush x:Key="AppTitleBarBackgroundBrush" Color="#00000000"/>
+    <SolidColorBrush x:Key="AppRowHoverBrush" Color="#2A3140"/>
+    <SolidColorBrush x:Key="AppRowSelectedBrush" Color="#2A3140"/>
+    <SolidColorBrush x:Key="AppRowDividerBrush" Color="#12FFFFFF"/>
+    <SolidColorBrush x:Key="AppChipBackgroundBrush" Color="#33363D"/>
+    <SolidColorBrush x:Key="AppChipTextBrush" Color="#B9BFC9"/>
+    <SolidColorBrush x:Key="AppToggleTrackBrush" Color="#33363D"/>
+    <SolidColorBrush x:Key="AppGreenBrush" Color="#3CC46A"/>
+    <SolidColorBrush x:Key="AppRedBrush" Color="#E5484D"/>
+    <SolidColorBrush x:Key="AppOrangeBrush" Color="#F5A524"/>
+    <SolidColorBrush x:Key="AppBlueBrush" Color="#4DA3FF"/>
+    <SolidColorBrush x:Key="AppSearchBackgroundBrush" Color="#12FFFFFF"/>
+    <SolidColorBrush x:Key="AppSearchBorderBrush" Color="#1FFFFFFF"/>
+    <SolidColorBrush x:Key="AppIconTileBrush" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="GlassSheenBrush" Color="#33FFFFFF"/>
+    <SolidColorBrush x:Key="GlassEdgeInnerBrush" Color="#40FFFFFF"/>
+    <!-- G3: segmented-control track + "liquid" thumb (graphite) -->
+    <SolidColorBrush x:Key="GlassSegTrackBrush" Color="#1FFFFFFF"/>
+    <SolidColorBrush x:Key="GlassSegThumbBrush" Color="#4DFFFFFF"/>
+    <!-- G3: tinted glass buttons (primary / Allow-mint / Block-coral) + their icon+text colours -->
+    <LinearGradientBrush x:Key="GlassPrimaryBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#4D3B82F6" Offset="0"/>
+        <GradientStop Color="#2E3B82F6" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="GlassMintBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#3322C55E" Offset="0"/>
+        <GradientStop Color="#1F22C55E" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="GlassCoralBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#33F87171" Offset="0"/>
+        <GradientStop Color="#1FF87171" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="GlassMintTextBrush" Color="#4ADE80"/>
+    <SolidColorBrush x:Key="GlassCoralTextBrush" Color="#F87171"/>
+
+    <!-- ===== semantic keys (same key set as Aurora) ===== -->
+    <SolidColorBrush x:Key="AppAccentBrush" Color="#4DA3FF"/>
+    <SolidColorBrush x:Key="AppAccentHoverBrush" Color="#6FB6FF"/>
+    <SolidColorBrush x:Key="AppAllowedBrush" Color="#3CC46A"/>
+    <SolidColorBrush x:Key="AppBlockedBrush" Color="#E5484D"/>
+    <SolidColorBrush x:Key="AppAskingBrush" Color="#F5A524"/>
+    <SolidColorBrush x:Key="AppReceivedBrush" Color="#22D3EE"/>
+    <SolidColorBrush x:Key="AppSentBrush" Color="#FB923C"/>
+    <SolidColorBrush x:Key="AppAIBrush" Color="#C084FC"/>
+    <SolidColorBrush x:Key="AppAllowedTintBrush" Color="#263CC46A"/>
+    <SolidColorBrush x:Key="AppBlockedTintBrush" Color="#26E5484D"/>
+    <SolidColorBrush x:Key="AppAskingTintBrush" Color="#26F5A524"/>
+    <SolidColorBrush x:Key="AppAccentTintBrush" Color="#264DA3FF"/>
+    <SolidColorBrush x:Key="AppOnAllowedBrush" Color="#0D2A1F"/>
+    <SolidColorBrush x:Key="AppOnBlockedBrush" Color="#3A0E18"/>
+    <SolidColorBrush x:Key="AppSidebarSelectedBrush" Color="#262A3140"/>
+    <Color x:Key="AppGlowVioletColor">#00000000</Color>
+    <Color x:Key="AppGlowVioletMidColor">#00000000</Color>
+    <Color x:Key="AppGlowTealMidColor">#00000000</Color>
+    <Color x:Key="AppGlowTealColor">#00000000</Color>
+
+    <!-- ===== SPEC-GLASS G2: glass card resources (same key set in all four themes) ===== -->
+    <!-- Fill: 14% white fading to 6% (dark glass) -->
+    <LinearGradientBrush x:Key="GlassFillGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#24FFFFFF" Offset="0"/>
+        <GradientStop Color="#0FFFFFFF" Offset="1"/>
+    </LinearGradientBrush>
+    <!-- Specular edge: 40% white at top-left fading to 5% at bottom-right -->
+    <LinearGradientBrush x:Key="GlassEdgeGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#66FFFFFF" Offset="0"/>
+        <GradientStop Color="#0DFFFFFF" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="GlassTopHighlightBrush" Color="#40FFFFFF"/>
+    <!-- Cached blurred aurora snapshot: ImageSource is set once at startup (see
+         MainWindow.CaptureGlassBackdrop). Empty in non-Aurora themes because the
+         glow colours there are transparent. -->
+    <ImageBrush x:Key="GlassAuroraBackdropBrush" Opacity="0.55" Stretch="Fill"/>
+    <!-- Card-only shadow (rows/pills get none) -->
+    <DropShadowEffect x:Key="GlassCardShadow" BlurRadius="30" ShadowDepth="8" Direction="270" Opacity="0.3" Color="#000000"/>
+</ResourceDictionary>
