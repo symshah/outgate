@@ -28,10 +28,10 @@
         <Storyboard x:Key="AuroraDrift" RepeatBehavior="Forever" AutoReverse="True">
             <DoubleAnimation Storyboard.TargetName="GlowLayer"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                             From="0" To="40" Duration="0:01:00"/>
+                             From="0" To="90" Duration="0:00:40"/>
             <DoubleAnimation Storyboard.TargetName="GlowLayer"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                             From="0" To="26" Duration="0:01:30"/>
+                             From="0" To="60" Duration="0:00:55"/>
         </Storyboard>
     </Window.Resources>
 
@@ -87,8 +87,26 @@
         <StackPanel Orientation="Horizontal" Margin="0,8,0,4">
             <!-- SPEC-GLASS G3: status pill — floating glass capsule; mode wired to real state in Render() -->
             <Border Style="{StaticResource GlassToolbarCapsule}" Margin="8,4,0,4" Padding="12,4" CornerRadius="14">
-                <TextBlock x:Name="StatusPill" Text="Protected · Ask mode" FontSize="12" FontWeight="SemiBold"
+                <StackPanel Orientation="Horizontal">
+                    <Grid Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,8,0">
+                        <Ellipse x:Name="PulseRing" Width="8" Height="8" Stroke="{DynamicResource AppAllowedBrush}" StrokeThickness="1.5"
+                                 RenderTransformOrigin="0.5,0.5" Opacity="0">
+                            <Ellipse.RenderTransform><ScaleTransform x:Name="PulseScale" ScaleX="0.6" ScaleY="0.6"/></Ellipse.RenderTransform>
+                            <Ellipse.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                    <BeginStoryboard><Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="PulseScale" Storyboard.TargetProperty="ScaleX" From="0.6" To="1.8" Duration="0:0:2.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="PulseScale" Storyboard.TargetProperty="ScaleY" From="0.6" To="1.8" Duration="0:0:2.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="PulseRing" Storyboard.TargetProperty="Opacity" From="0.8" To="0" Duration="0:0:2.2"/>
+                                    </Storyboard></BeginStoryboard>
+                                </EventTrigger>
+                            </Ellipse.Triggers>
+                        </Ellipse>
+                        <Ellipse Width="8" Height="8" Fill="{DynamicResource AppAllowedBrush}"/>
+                    </Grid>
+                    <TextBlock x:Name="StatusPill" Text="Protected · Ask mode" FontSize="12" FontWeight="SemiBold"
                            Foreground="{DynamicResource TextFillColorPrimaryBrush}" VerticalAlignment="Center"/>
+                </StackPanel>
             </Border>
             <!-- SPEC-GLASS G3: the toolbar controls grouped inside one floating glass capsule -->
             <Border Style="{StaticResource GlassToolbarCapsule}" Margin="8,4" Padding="4,3">
