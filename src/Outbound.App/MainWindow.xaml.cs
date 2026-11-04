@@ -266,8 +266,12 @@ public partial class MainWindow : FluentWindow
         if (NavList.SelectedItem is ListBoxItem item && item.Tag is string tag) ShowPage(tag);
     }
 
+    private string? _shownPage;
+
     private void ShowPage(string page)
     {
+        bool changed = _shownPage != page;
+        _shownPage = page;
         PageOverview.Visibility = page == "overview" ? Visibility.Visible : Visibility.Collapsed;
         PageActivity.Visibility = page == "activity" ? Visibility.Visible : Visibility.Collapsed;
         PageRules.Visibility = page == "rules" ? Visibility.Visible : Visibility.Collapsed;
@@ -286,6 +290,17 @@ public partial class MainWindow : FluentWindow
         if (page == "review") RefreshReview();
         if (page == "settings") { LoadProfilesUi(); LoadBlocklistsUi(); LoadLimitsUi(); }
         if (page == "map") ShowMapPage();
+        // LocalDoc-style entrance (not for the map: WebView2 is a native HWND and can't be transformed).
+        if (changed && page != "map")
+        {
+            FrameworkElement? el = page switch
+            {
+                "overview" => PageOverview, "activity" => PageActivity, "rules" => PageRules,
+                "review" => PageReview, "settings" => PageSettings, _ => null
+            };
+            if (el != null)
+                Dispatcher.BeginInvoke(() => Motion.PageIn(el), System.Windows.Threading.DispatcherPriority.Loaded);
+        }
     }
 
     /// <summary>Automation entry point for the IPC `ui.show` command — switches the visible page (UI thread).</summary>

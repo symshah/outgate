@@ -12,10 +12,10 @@
     <SolidColorBrush x:Key="AppWindowBorderBrush" Color="#262B42"/>
     <SolidColorBrush x:Key="AppSidebarBackgroundBrush" Color="#CC11131F"/>   <!-- 80% so the glow shows through -->
     <SolidColorBrush x:Key="AppTitleBarBackgroundBrush" Color="#00000000"/>
-    <Color x:Key="AppGlowVioletColor">#8B5CF6</Color>
-    <Color x:Key="AppGlowVioletMidColor">#738B5CF6</Color>
-    <Color x:Key="AppGlowTealMidColor">#7322D3EE</Color>
-    <Color x:Key="AppGlowTealColor">#22D3EE</Color>
+    <Color x:Key="AppGlowVioletColor">#5B5BF0</Color>
+    <Color x:Key="AppGlowVioletMidColor">#735B5BF0</Color>
+    <Color x:Key="AppGlowTealMidColor">#73C14BF0</Color>
+    <Color x:Key="AppGlowTealColor">#C14BF0</Color>
 
     <!-- ===== cards (85% opaque) and rows ===== -->
     <SolidColorBrush x:Key="AppCardBackgroundBrush" Color="#D9161A2B"/>      <!-- #161A2B at 85% -->
@@ -32,7 +32,7 @@
     <SolidColorBrush x:Key="AppRowHoverBrush" Color="#1B1F33"/>
     <SolidColorBrush x:Key="AppRowSelectedBrush" Color="#1B1F33"/>
     <SolidColorBrush x:Key="AppRowDividerBrush" Color="#20243A"/>
-    <SolidColorBrush x:Key="AppSidebarSelectedBrush" Color="#2E8B5CF6"/>     <!-- violet at 18% -->
+    <SolidColorBrush x:Key="AppSidebarSelectedBrush" Color="#2E5B5BF0"/>     <!-- violet at 18% -->
 
     <!-- ===== text ===== -->
     <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="#ECEEF7"/>
@@ -41,10 +41,10 @@
     <SolidColorBrush x:Key="TextFillColorDisabledBrush" Color="#565B78"/>
 
     <!-- ===== accent + status ===== -->
-    <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#8B5CF6"/>
-    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#9D74F7"/>
-    <SolidColorBrush x:Key="AppAccentBrush" Color="#8B5CF6"/>
-    <SolidColorBrush x:Key="AppAccentHoverBrush" Color="#9D74F7"/>
+    <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#5B5BF0"/>
+    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#7878F5"/>
+    <SolidColorBrush x:Key="AppAccentBrush" Color="#5B5BF0"/>
+    <SolidColorBrush x:Key="AppAccentHoverBrush" Color="#7878F5"/>
     <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="#1B1F33"/>
     <SolidColorBrush x:Key="SubtleFillColorTertiaryBrush" Color="#161A2B"/>
@@ -59,13 +59,13 @@
     <SolidColorBrush x:Key="AppGreenBrush" Color="#34D399"/>
     <SolidColorBrush x:Key="AppRedBrush" Color="#FB7185"/>
     <SolidColorBrush x:Key="AppOrangeBrush" Color="#FBBF24"/>
-    <SolidColorBrush x:Key="AppBlueBrush" Color="#8B5CF6"/>
+    <SolidColorBrush x:Key="AppBlueBrush" Color="#5B5BF0"/>
 
     <!-- tinted backgrounds = colour at 15% -->
     <SolidColorBrush x:Key="AppAllowedTintBrush" Color="#2634D399"/>
     <SolidColorBrush x:Key="AppBlockedTintBrush" Color="#26FB7185"/>
     <SolidColorBrush x:Key="AppAskingTintBrush" Color="#26FBBF24"/>
-    <SolidColorBrush x:Key="AppAccentTintBrush" Color="#268B5CF6"/>
+    <SolidColorBrush x:Key="AppAccentTintBrush" Color="#265B5BF0"/>
     <SolidColorBrush x:Key="AppOnAllowedBrush" Color="#0D2A1F"/>  <!-- dark text inside a filled mint circle -->
     <SolidColorBrush x:Key="AppOnBlockedBrush" Color="#3A0E18"/>  <!-- dark text inside a filled coral circle -->
 
@@ -93,9 +93,9 @@
     <SolidColorBrush x:Key="GlassSegTrackBrush" Color="#20FFFFFF"/>
     <SolidColorBrush x:Key="GlassSegThumbBrush" Color="#66FFFFFF"/>
     <!-- G3: tinted glass buttons (primary / Allow-mint / Block-coral) + their icon+text colours -->
-    <LinearGradientBrush x:Key="GlassPrimaryBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#593B82F6" Offset="0"/>
-        <GradientStop Color="#333B82F6" Offset="1"/>
+    <LinearGradientBrush x:Key="GlassPrimaryBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#CC5B5BF0" Offset="0"/>
+        <GradientStop Color="#CCC14BF0" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="GlassMintBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#4034D399" Offset="0"/>
