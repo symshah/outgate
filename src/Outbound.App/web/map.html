@@ -5,38 +5,149 @@
 <title>Outbound — map</title>
 <link rel="stylesheet" href="leaflet.css"/>
 <style>
-  :root { --bg:#141518; --panel:#1d1f24; --text:#e6e8ee; --muted:#9aa0ad; --accent:#4da3ff; --danger:#ef4444; }
+  /* ================= design system (LocalDoc) ================= */
+  :root {
+    --bg:#0d0f1a;
+    --panel:rgba(22,26,43,.55);
+    --panel-border:rgba(255,255,255,.09);
+    --text:#e6e8ee;
+    --muted:#9aa0ad;
+    --accent:#5b5bf0;
+    --accent-1:#5b5bf0;
+    --accent-2:#c14bf0;
+    --accent-grad:linear-gradient(135deg,#5b5bf0,#c14bf0);
+    --ok:#12a37a; --block:#e0394a; --warn:#d98a0b;
+    --danger:#ef4444;
+    --font:"Segoe UI Variable","Segoe UI",system-ui,sans-serif;
+    --mono:"Cascadia Code",Consolas,monospace;
+    --spring:cubic-bezier(.34,1.56,.64,1);
+    --radius:18px;
+    --blur:blur(28px) saturate(1.6);
+    --shadow:0 8px 32px rgba(0,0,0,.35);
+  }
+  [data-theme="light"] {
+    --bg:#eef1f8;
+    --panel:rgba(255,255,255,.6);
+    --panel-border:rgba(20,24,40,.1);
+    --text:#1c2030;
+    --muted:#5c6478;
+    --shadow:0 8px 32px rgba(30,40,90,.14);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      --bg:#eef1f8;
+      --panel:rgba(255,255,255,.6);
+      --panel-border:rgba(20,24,40,.1);
+      --text:#1c2030;
+      --muted:#5c6478;
+      --shadow:0 8px 32px rgba(30,40,90,.14);
+    }
+  }
   * { box-sizing:border-box; margin:0; padding:0; }
   html,body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--text);
-    font-family:"Segoe UI",system-ui,sans-serif; font-size:13px; user-select:none; }
-  #top { display:flex; align-items:center; gap:8px; padding:6px 10px; border-bottom:1px solid #2a2d34; position:relative; z-index:1000; }
-  #top .seg { display:flex; border:1px solid #3a3e47; border-radius:6px; overflow:hidden; }
-  #top .seg button { background:transparent; color:var(--muted); border:0; padding:4px 12px; cursor:pointer; font-size:12.5px; }
-  #top .seg button.on { background:#31465f; color:#fff; }
+    font-family:var(--font); font-size:13px; user-select:none; }
+
+  .glass { background:var(--panel); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+    border:1px solid var(--panel-border); box-shadow:var(--shadow); }
+
+  /* aurora: 3 drifting blurred orbs behind the glass chrome */
+  #aurora { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  #aurora .o { position:absolute; width:46vmax; height:46vmax; border-radius:50%; filter:blur(90px); opacity:.5; }
+  #aurora .o1 { background:radial-gradient(circle, rgba(91,91,240,.4), transparent 65%); top:-12%; left:-8%; animation:drift1 80s ease-in-out infinite alternate; }
+  #aurora .o2 { background:radial-gradient(circle, rgba(193,75,240,.33), transparent 65%); bottom:-18%; right:-10%; animation:drift2 95s ease-in-out infinite alternate; }
+  #aurora .o3 { background:radial-gradient(circle, rgba(18,163,122,.25), transparent 65%); top:30%; left:45%; animation:drift3 110s ease-in-out infinite alternate; }
+  [data-theme="light"] #aurora .o { opacity:.35; }
+  @keyframes drift1 { to { transform:translate(14vw,10vh) scale(1.15); } }
+  @keyframes drift2 { to { transform:translate(-12vw,-8vh) scale(1.1); } }
+  @keyframes drift3 { to { transform:translate(-10vw,12vh) scale(1.2); } }
+
+  /* ================= top bar ================= */
+  #top { display:flex; align-items:center; gap:8px; height:34px; padding:0 10px; position:relative; z-index:1000;
+    border-radius:0 0 14px 14px; }
+  #top .seg { display:flex; gap:2px; padding:2px; border-radius:11px; }
+  #top .seg button { background:transparent; color:var(--muted); border:0; padding:4px 12px; cursor:pointer;
+    font-size:12.5px; font-family:var(--font); border-radius:9px; transition:transform .18s var(--spring), background .2s, color .2s; }
+  #top .seg button:hover { transform:translateY(-2px); color:var(--text); }
+  #top .seg button:active { transform:scale(.95); }
+  #top .seg button.on { background:var(--accent-grad); color:#fff; box-shadow:0 2px 10px rgba(91,91,240,.4); }
   #top .spacer { flex:1; }
-  #top .stat { color:var(--muted); font-size:12px; }
-  #main { display:flex; height:calc(100% - 34px - 96px); position:relative; }
+  .live-dot { width:8px; height:8px; border-radius:50%; background:var(--ok); flex:none; }
+  #top .stat { color:var(--muted); font-size:11.5px; font-family:var(--mono); }
+  #btnTheme { width:26px; height:26px; border-radius:50%; border:1px solid var(--panel-border); background:var(--panel);
+    backdrop-filter:var(--blur); color:var(--text); cursor:pointer; font-size:13px; line-height:1; flex:none;
+    transition:transform .18s var(--spring), box-shadow .2s; }
+  #btnTheme:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(91,91,240,.35); }
+  #btnTheme:active { transform:scale(.95); }
+
+  /* ================= main ================= */
+  #main { display:flex; height:calc(100% - 34px - 96px); position:relative; z-index:1; }
   #viz { flex:1; position:relative; min-width:0; background:#0a0d13; }
   #viz .globe-canvas { position:absolute; inset:0; overflow:hidden; }
-  #side { width:230px; border-left:1px solid #2a2d34; overflow-y:auto; padding:8px; }
-  #side h3 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:6px; }
-  .place { display:flex; justify-content:space-between; gap:6px; padding:5px 6px; border-radius:6px; cursor:pointer; }
-  .place:hover, .place.sel { background:#2a3140; }
+  #side { width:230px; margin:8px 8px 8px 0; border-radius:var(--radius); overflow-y:auto; padding:10px; }
+  #side h3 { font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin-bottom:8px; }
+  .place { display:flex; justify-content:space-between; gap:6px; padding:6px 8px; border-radius:12px; cursor:pointer;
+    margin-bottom:2px; transition:background .2s, transform .18s var(--spring); }
+  .place:hover, .place.sel { background:rgba(91,91,240,.16); transform:translateY(-2px); }
   .place .nm { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .place .sub { color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .place .by { color:var(--accent); font-weight:600; white-space:nowrap; }
-  .place .blk { color:var(--danger); font-weight:700; font-size:11px; }
-  #chartwrap { height:96px; border-top:1px solid #2a2d34; position:relative; padding:4px 8px 6px; }
+  .place .sub, .sub { color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .place .by { background:var(--accent-grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+    font-family:var(--mono); font-weight:700; white-space:nowrap; }
+  .place .blk { color:var(--block); font-weight:700; font-size:11px; }
+
+  /* ================= chart strip ================= */
+  #chartwrap { height:96px; position:relative; padding:4px 8px 6px; z-index:10; border-radius:14px 14px 0 0; }
   #chart { width:100%; height:78px; display:block; cursor:crosshair; }
-  #rangeNote { position:absolute; top:4px; right:10px; font-size:11px; color:var(--muted); }
-  .tip { position:absolute; pointer-events:none; background:#0c0d10f2; border:1px solid #3a3e47; border-radius:6px;
-    padding:5px 8px; font-size:12px; display:none; z-index:1200; max-width:260px; }
-  .scene-tooltip { color:#e6e8ee !important; font-size:12px !important; opacity:1 !important; background:#0c0d10dd !important; padding:4px 8px; border-radius:6px; max-width:260px; }
+  #rangeNote { position:absolute; top:5px; right:12px; font-size:11px; color:var(--muted); font-family:var(--mono); }
+
+  /* tooltip + toasts */
+  .tip { position:absolute; pointer-events:none; border-radius:12px; padding:6px 10px; font-size:12px;
+    display:none; z-index:1200; max-width:260px; }
+  #toasts { position:fixed; top:44px; left:50%; transform:translateX(-50%); z-index:1300; display:flex;
+    flex-direction:column; gap:8px; align-items:center; pointer-events:none; }
+  .toast { border-radius:14px; padding:8px 16px; font-size:12.5px; animation:toastIn .35s var(--spring); }
+  .toast.err { border-color:rgba(224,57,74,.55); color:var(--block); }
+  .toast.out { opacity:0; transform:translateY(-8px); transition:opacity .3s, transform .3s; }
+  @keyframes toastIn { from { opacity:0; transform:translateY(-10px) scale(.95); } }
+
+  /* modal (design-system provided; no modal in this view yet) */
+  .modal-backdrop { position:fixed; inset:0; background:rgba(8,10,18,.5); backdrop-filter:blur(8px); z-index:1400;
+    display:none; align-items:center; justify-content:center; }
+  .modal-backdrop.open { display:flex; }
+  .modal-card { border-radius:20px; padding:20px 24px; max-width:440px; }
+
+  /* ================= entrance + live motion ================= */
+  @keyframes slideDown { from { transform:translateY(-100%); opacity:0; } }
+  @keyframes slideUp { from { transform:translateY(100%); opacity:0; } }
+  @keyframes slideRight { from { transform:translateX(26px); opacity:0; } }
+  @keyframes placeIn { from { opacity:0; transform:translateX(14px); } }
+  @keyframes ping { 0% { box-shadow:0 0 0 0 rgba(18,163,122,.5); } 70% { box-shadow:0 0 0 7px rgba(18,163,122,0); } 100% { box-shadow:0 0 0 0 rgba(18,163,122,0); } }
+  @keyframes modalIn { from { opacity:0; transform:scale(.92); } }
+  @media (prefers-reduced-motion: no-preference) {
+    #top { animation:slideDown .5s var(--spring); }
+    #side { animation:slideRight .55s var(--spring) .08s backwards; }
+    #chartwrap { animation:slideUp .5s var(--spring) .05s backwards; }
+    .live-dot { animation:ping 2.2s ease-out infinite; }
+    .modal-backdrop.open .modal-card { animation:modalIn .35s var(--spring); }
+    .place { animation:placeIn .4s var(--spring) backwards; }
+    .place:nth-child(1)  { animation-delay:0ms; }
+    .place:nth-child(2)  { animation-delay:45ms; }
+    .place:nth-child(3)  { animation-delay:90ms; }
+    .place:nth-child(4)  { animation-delay:135ms; }
+    .place:nth-child(5)  { animation-delay:180ms; }
+    .place:nth-child(6)  { animation-delay:225ms; }
+    .place:nth-child(7)  { animation-delay:270ms; }
+    .place:nth-child(8)  { animation-delay:315ms; }
+    .place:nth-child(9)  { animation-delay:360ms; }
+    .place:nth-child(10) { animation-delay:405ms; }
+    .place:nth-child(11) { animation-delay:450ms; }
+    .place:nth-child(12) { animation-delay:495ms; }
+    .place:nth-child(n+13) { animation-delay:540ms; }
+  }
 
   /* ---- Leaflet, offline: bundled raster imagery, no tiles fetched from the internet ---- */
   .leaflet-container { background:#0a0d13; font:inherit; outline:none; }
-  .leaflet-control-zoom a { background:#1d1f24; color:#e6e8ee; border-color:#3a3e47; }
-  .leaflet-control-zoom a:hover { background:#2a3140; }
+  .leaflet-control-zoom a { background:var(--panel); color:var(--text); border-color:var(--panel-border); backdrop-filter:var(--blur); }
+  .leaflet-control-zoom a:hover { background:rgba(91,91,240,.25); }
   .raster-satellite { filter:brightness(0.74) saturate(1.05) contrast(1.03); }
   .raster-standard  { filter:brightness(1.02) saturate(0.95); }
   .raster-muted     { filter:grayscale(0.8) brightness(0.52) contrast(0.92); }
@@ -44,16 +155,18 @@
   .leaflet-tooltip.city-label { background:transparent; border:0; box-shadow:none; color:#e2e9f5; font-size:11px;
     font-weight:600; text-shadow:0 1px 3px #000, 0 0 8px #000a; padding:0; }
   .leaflet-tooltip.city-label::before { display:none; }
-  .leaflet-tooltip.dot-tip { background:#0c0d10f2; border:1px solid #3a3e47; color:#e6e8ee; font-size:12px;
-    border-radius:6px; padding:5px 8px; }
+  .leaflet-tooltip.dot-tip { background:var(--panel); border:1px solid var(--panel-border); color:var(--text); font-size:12px;
+    border-radius:10px; padding:5px 8px; backdrop-filter:var(--blur); }
   .leaflet-tooltip.dot-tip::before { display:none; }
   .origin-marker { background:transparent; border:0; }
-  .origin-dot { width:26px; height:26px; border-radius:50%; background:#2f8fe6; border:2px solid #cfe6ff;
-    display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px #2f8fe633, 0 2px 6px #0009; }
+  .origin-dot { width:26px; height:26px; border-radius:50%; background:var(--accent-grad); border:2px solid #cfe6ff;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px rgba(91,91,240,.2), 0 2px 6px #0009; }
   .origin-dot svg { width:15px; height:15px; }
   .city-label-wrap { background:transparent; border:0; }
   .city-label-text { display:inline-block; transform:translate(0,-50%); color:#e6edf9; font-size:11px; font-weight:600;
     white-space:nowrap; text-shadow:0 1px 3px #000, 0 0 8px #000b; pointer-events:none; }
+  .scene-tooltip { color:#e6e8ee !important; font-size:12px !important; opacity:1 !important; background:rgba(12,13,16,.86) !important;
+    padding:4px 8px; border-radius:10px; max-width:260px; }
 
   /* ---- app theme: Midnight (Settings › Appearance) = navy map background ---- */
   body.midnight { background:#0B1322; }
@@ -61,19 +174,25 @@
   body.midnight #side { border-left-color:#22314D; }
   body.midnight #chartwrap { border-top-color:#22314D; }
   body.midnight .place:hover, body.midnight .place.sel { background:#1A2740; }
-  body.midnight .place .by { color:#3B82F6; }
+  body.midnight .place .by { color:#3B82F6; -webkit-background-clip:border-box; background-clip:border-box; }
   body.midnight .leaflet-container { background:#0B1322; }
   body.midnight img.leaflet-image-layer { filter:brightness(0.66) saturate(1.04) contrast(1.02); }
   body.midnight .leaflet-control-zoom a { background:#0E1729; color:#E8EEF7; border-color:#22314D; }
   /* ---- app theme: Aurora (default) — dark ink map, glass overlays ---- */
   body.aurora { background:#0D0F1A; }
   body.aurora #top, body.aurora #side, body.aurora #chartwrap {
-    background:rgba(22,26,43,0.55); backdrop-filter:blur(18px) saturate(160%); border-color:#262B42; }
+    background:rgba(22,26,43,0.55); backdrop-filter:blur(28px) saturate(160%); border-color:#262B42; }
   body.aurora .place:hover, body.aurora .place.sel { background:#1B1F33; }
-  body.aurora .place .by { color:#34D399; }
+  body.aurora .place .by { color:#34D399; -webkit-background-clip:border-box; background-clip:border-box; }
   body.aurora .leaflet-container { background:#0D0F1A; }
   body.aurora img.leaflet-image-layer { filter:brightness(0.62) saturate(0.92) contrast(1.03); }
   body.aurora .leaflet-control-zoom a { background:rgba(22,26,43,0.75); color:#ECEEF7; border-color:#262B42; }
+  /* ---- app theme: Light (Settings › Appearance) ---- */
+  body.light { background:#eef1f8; }
+  body.light #top, body.light #side, body.light #chartwrap { background:rgba(255,255,255,.6); border-color:rgba(20,24,40,.1); color:#1c2030; }
+  body.light .place:hover, body.light .place.sel { background:rgba(91,91,240,.12); }
+  body.light .stat, body.light .sub { color:#5c6478; }
+  body.light .place .nm { color:#1c2030; }
   /* night sky behind the 3D globe */
   .globe-canvas { background:#04060c; background-image:
     radial-gradient(1px 1px at 20% 30%, #ffffff88 50%, transparent 51%),
@@ -86,27 +205,113 @@
 </style>
 </head>
 <body>
-<div id="top">
-  <div class="seg"><button id="btn2d" class="on">2D map</button><button id="btn3d">3D globe</button></div>
-  <div class="seg" id="styleSeg">
+<div id="aurora" aria-hidden="true"><i class="o o1"></i><i class="o o2"></i><i class="o o3"></i></div>
+<div id="top" class="glass">
+  <div class="seg glass"><button id="btn2d" class="on">2D map</button><button id="btn3d">3D globe</button></div>
+  <div class="seg glass" id="styleSeg">
     <button data-style="satellite" class="on">Satellite</button>
     <button data-style="standard">Standard</button>
     <button data-style="muted">Muted</button>
   </div>
   <div class="spacer"></div>
+  <button id="btnTheme" title="Toggle light / dark">☀</button>
+  <span class="live-dot" aria-hidden="true"></span>
   <span class="stat" id="stat">waiting for data…</span>
 </div>
 <div id="main">
   <div id="viz"></div>
-  <div class="tip" id="tip"></div>
-  <div id="side"><h3>Top places</h3><div id="places"></div></div>
+  <div class="tip glass" id="tip"></div>
+  <div id="side" class="glass"><h3>Top places</h3><div id="places"></div></div>
 </div>
-<div id="chartwrap"><canvas id="chart"></canvas><span id="rangeNote">drag across the chart to filter map + list</span></div>
+<div id="chartwrap" class="glass"><canvas id="chart"></canvas><span id="rangeNote">drag across the chart to filter map + list</span></div>
+<div id="toasts"></div>
 <script src="d3-array.min.js"></script>
 <script src="d3-geo.min.js"></script>
 <script src="topojson-client.min.js"></script>
 <script src="leaflet.js"></script>
 <script src="globe.gl.min.js"></script>
 <script src="map.js"></script>
+<script>
+// ---------- small UI layer (theme toggle, toasts, count-up) — no map logic touched ----------
+(function ui() {
+  "use strict";
+  var root = document.documentElement;
+
+  // theme toggle: localStorage (try/catch), default follows prefers-color-scheme
+  function savedTheme() { try { return localStorage.getItem("ob-map-theme"); } catch (e) { return null; } }
+  function applyTheme(t) {
+    if (t === "light" || t === "dark") root.setAttribute("data-theme", t);
+    else root.removeAttribute("data-theme");
+  }
+  function effTheme() {
+    var a = root.getAttribute("data-theme");
+    if (a) return a;
+    return (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+  }
+  var btn = document.getElementById("btnTheme");
+  function syncGlyph() { if (btn) btn.textContent = effTheme() === "light" ? "\u263E" : "\u2600"; }
+  applyTheme(savedTheme());
+  syncGlyph();
+  if (btn) btn.addEventListener("click", function () {
+    var next = effTheme() === "light" ? "dark" : "light";
+    applyTheme(next);
+    try { localStorage.setItem("ob-map-theme", next); } catch (e) {}
+    syncGlyph();
+  });
+
+  // toasts
+  var box = document.getElementById("toasts");
+  window.obToast = function (msg, kind) {
+    var el = document.createElement("div");
+    el.className = "toast glass" + (kind ? " " + kind : "");
+    el.textContent = msg;
+    box.appendChild(el);
+    setTimeout(function () { el.classList.add("out"); setTimeout(function () { el.remove(); }, 320); }, 3500);
+  };
+  // surface the page's existing document.title error channel as toasts (no behaviour change)
+  var lastTitle = document.title;
+  setInterval(function () {
+    if (document.title === lastTitle) return;
+    lastTitle = document.title;
+    if (document.title.indexOf("COUNTRIES-FAIL") === 0) window.obToast("Map borders failed to load", "err");
+    else if (document.title.indexOf("JSERR") === 0) window.obToast("UI error: " + document.title.slice(6), "err");
+  }, 800);
+
+  // count-up: animate the bytes figure inside #stat when it changes
+  var stat = document.getElementById("stat");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var animating = false, prevVal = 0;
+  if (stat && !reduce) {
+    new MutationObserver(function () {
+      if (animating) return;
+      var txt = stat.textContent;
+      var m = txt.match(/(\d+(?:\.\d+)?)\s*(KB|MB|GB|B)/);
+      if (!m) { prevVal = 0; return; }
+      var to = parseFloat(m[1]), unit = m[2], from = prevVal;
+      prevVal = to;
+      if (from === to) return;
+      animating = true;
+      var t0 = performance.now(), dur = 550;
+      function step(now) {
+        var k = Math.min(1, (now - t0) / dur);
+        var e = 1 - Math.pow(1 - k, 3);
+        var v = from + (to - from) * e;
+        var dec = unit === "GB" ? 2 : (unit === "B" ? 0 : 1);
+        stat.textContent = txt.replace(m[1], v.toFixed(dec));
+        if (k < 1) requestAnimationFrame(step); else animating = false;
+      }
+      requestAnimationFrame(step);
+    }).observe(stat, { childList: true, characterData: true, subtree: true });
+  }
+
+  // modal close affordances (Esc / backdrop) for any future .modal-backdrop
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") document.querySelectorAll(".modal-backdrop.open").forEach(function (m) { m.classList.remove("open"); });
+  });
+  document.addEventListener("click", function (e) {
+    if (e.target.classList && e.target.classList.contains("modal-backdrop")) e.target.classList.remove("open");
+  });
+})();
+</script>
 </body>
 </html>

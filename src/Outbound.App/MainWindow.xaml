@@ -38,7 +38,7 @@
     <Grid>
         <!-- Aurora's two soft glows (8% each), behind everything. The colour keys are transparent
              in the other themes, so this layer costs nothing there. -->
-        <Grid x:Name="GlowLayer" IsHitTestVisible="False" Opacity="0.08" Margin="-60">
+        <Grid x:Name="GlowLayer" IsHitTestVisible="False" Opacity="0.16" Margin="-60">
             <!-- SPEC-GLASS G1: slow drift — X loops over 60s, Y over 90s (independent
                  periods → a wandering Lissajous path), both auto-reversing. The -60 margin
                  oversizes the layer so the drift never exposes a bare edge. -->
@@ -123,7 +123,7 @@
              ListBoxItem provides SelectionItem (and ListBox Selection) natively, plus the
              standard arrow-key/Enter menu keyboard behaviour. -->
         <!-- SPEC-GLASS G2: sidebar glass panel (rows, not a card — no shadow). -->
-        <Border DockPanel.Dock="Left" Style="{StaticResource GlassRow}" Width="170">
+        <Border DockPanel.Dock="Left" Style="{StaticResource GlassRow}" Width="184">
         <ListBox x:Name="NavList" BorderThickness="0" Padding="0,8"
                  Background="Transparent"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -139,10 +139,10 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
                                 <Grid>
-                                    <Border x:Name="Bd" Background="Transparent" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                    <Border x:Name="Bd" Background="Transparent" CornerRadius="12" Padding="{TemplateBinding Padding}">
                                         <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                     </Border>
-                                    <Rectangle x:Name="ActiveBar" Width="3" Height="16" RadiusX="1.5" RadiusY="1.5"
+                                    <Rectangle x:Name="ActiveBar" Width="4" Height="18" RadiusX="2" RadiusY="2"
                                                HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Collapsed"
                                                Fill="{DynamicResource AccentFillColorDefaultBrush}"/>
                                 </Grid>
@@ -153,7 +153,7 @@
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AppSidebarSelectedBrush}"/>
                                         <Setter TargetName="ActiveBar" Property="Visibility" Value="Visible"/>
-                                        <Setter TargetName="ActiveBar" Property="Fill" Value="{DynamicResource AppAccentBrush}"/>
+                                        <Setter TargetName="ActiveBar" Property="Fill"><Setter.Value><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#5B5BF0" Offset="0"/><GradientStop Color="#C14BF0" Offset="1"/></LinearGradientBrush></Setter.Value></Setter>
                                         <Setter Property="Foreground" Value="{DynamicResource AppAccentBrush}"/>
                                     </Trigger>
                                     <Trigger Property="IsKeyboardFocusWithin" Value="True">
@@ -485,7 +485,7 @@
                             <DataGridTextColumn Header="Port · Proto" Binding="{Binding PortProto}" Width="90"/>
                             <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="260"/>
                             <DataGridTextColumn Header="When" Binding="{Binding WhenDisplay}" Width="130"/>
-                            <DataGridTemplateColumn Header="" Width="170">
+                            <DataGridTemplateColumn Header="" Width="184">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">

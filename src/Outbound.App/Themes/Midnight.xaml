@@ -40,8 +40,8 @@
     <SolidColorBrush x:Key="TextFillColorDisabledBrush" Color="#5A6579"/>
 
     <!-- ===== accent + status ===== -->
-    <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#3B82F6"/>
-    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#5B95F8"/>
+    <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#5B5BF0"/>
+    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#7878F5"/>
     <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="#0FFFFFFF"/>
     <SolidColorBrush x:Key="SubtleFillColorTertiaryBrush" Color="#0AFFFFFF"/>
@@ -56,14 +56,14 @@
     <SolidColorBrush x:Key="AppGreenBrush" Color="#2FBF5B"/>
     <SolidColorBrush x:Key="AppRedBrush" Color="#E5484D"/>
     <SolidColorBrush x:Key="AppOrangeBrush" Color="#F5A524"/>
-    <SolidColorBrush x:Key="AppBlueBrush" Color="#3B82F6"/>
+    <SolidColorBrush x:Key="AppBlueBrush" Color="#5B5BF0"/>
     <SolidColorBrush x:Key="AppSearchBackgroundBrush" Color="#0DFFFFFF"/>
     <SolidColorBrush x:Key="AppSearchBorderBrush" Color="#1AFFFFFF"/>
     <SolidColorBrush x:Key="AppIconTileBrush" Color="#FFFFFFFF"/>
 
     <!-- ===== semantic keys (same key set as Aurora) ===== -->
-    <SolidColorBrush x:Key="AppAccentBrush" Color="#3B82F6"/>
-    <SolidColorBrush x:Key="AppAccentHoverBrush" Color="#5B95F8"/>
+    <SolidColorBrush x:Key="AppAccentBrush" Color="#5B5BF0"/>
+    <SolidColorBrush x:Key="AppAccentHoverBrush" Color="#7878F5"/>
     <SolidColorBrush x:Key="AppAllowedBrush" Color="#2FBF5B"/>
     <SolidColorBrush x:Key="AppBlockedBrush" Color="#E5484D"/>
     <SolidColorBrush x:Key="AppAskingBrush" Color="#F5A524"/>
@@ -73,10 +73,10 @@
     <SolidColorBrush x:Key="AppAllowedTintBrush" Color="#262FBF5B"/>
     <SolidColorBrush x:Key="AppBlockedTintBrush" Color="#26E5484D"/>
     <SolidColorBrush x:Key="AppAskingTintBrush" Color="#26F5A524"/>
-    <SolidColorBrush x:Key="AppAccentTintBrush" Color="#263B82F6"/>
+    <SolidColorBrush x:Key="AppAccentTintBrush" Color="#265B5BF0"/>
     <SolidColorBrush x:Key="AppOnAllowedBrush" Color="#0D2A1F"/>
     <SolidColorBrush x:Key="AppOnBlockedBrush" Color="#3A0E18"/>
-    <SolidColorBrush x:Key="AppSidebarSelectedBrush" Color="#2E3B82F6"/>
+    <SolidColorBrush x:Key="AppSidebarSelectedBrush" Color="#2E5B5BF0"/>
     <Color x:Key="AppGlowVioletColor">#00000000</Color>
     <Color x:Key="AppGlowVioletMidColor">#00000000</Color>
     <Color x:Key="AppGlowTealMidColor">#00000000</Color>
@@ -98,9 +98,9 @@
     <SolidColorBrush x:Key="GlassSegTrackBrush" Color="#1FFFFFFF"/>
     <SolidColorBrush x:Key="GlassSegThumbBrush" Color="#59FFFFFF"/>
     <!-- G3: tinted glass buttons (primary / Allow-mint / Block-coral) + their icon+text colours -->
-    <LinearGradientBrush x:Key="GlassPrimaryBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#4D3B82F6" Offset="0"/>
-        <GradientStop Color="#2E3B82F6" Offset="1"/>
+    <LinearGradientBrush x:Key="GlassPrimaryBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#B35B5BF0" Offset="0"/>
+        <GradientStop Color="#B3C14BF0" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="GlassMintBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#3334D399" Offset="0"/>

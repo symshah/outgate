@@ -20,14 +20,14 @@
     <SolidColorBrush x:Key="AppGreenBrush" Color="#1FA34A"/>
     <SolidColorBrush x:Key="AppRedBrush" Color="#D93036"/>
     <SolidColorBrush x:Key="AppOrangeBrush" Color="#E08700"/>
-    <SolidColorBrush x:Key="AppBlueBrush" Color="#1D6FE0"/>
+    <SolidColorBrush x:Key="AppBlueBrush" Color="#4F46E5"/>
     <SolidColorBrush x:Key="AppSearchBackgroundBrush" Color="#0A000000"/>
     <SolidColorBrush x:Key="AppSearchBorderBrush" Color="#1A000000"/>
     <SolidColorBrush x:Key="AppIconTileBrush" Color="#FFFFFFFF"/>
 
     <!-- ===== semantic keys (same key set as Aurora) ===== -->
-    <SolidColorBrush x:Key="AppAccentBrush" Color="#1D6FE0"/>
-    <SolidColorBrush x:Key="AppAccentHoverBrush" Color="#3A85E8"/>
+    <SolidColorBrush x:Key="AppAccentBrush" Color="#4F46E5"/>
+    <SolidColorBrush x:Key="AppAccentHoverBrush" Color="#6366F1"/>
     <SolidColorBrush x:Key="AppAllowedBrush" Color="#1FA34A"/>
     <SolidColorBrush x:Key="AppBlockedBrush" Color="#D93036"/>
     <SolidColorBrush x:Key="AppAskingBrush" Color="#E08700"/>
@@ -37,16 +37,16 @@
     <SolidColorBrush x:Key="AppAllowedTintBrush" Color="#261FA34A"/>
     <SolidColorBrush x:Key="AppBlockedTintBrush" Color="#26D93036"/>
     <SolidColorBrush x:Key="AppAskingTintBrush" Color="#26E08700"/>
-    <SolidColorBrush x:Key="AppAccentTintBrush" Color="#261D6FE0"/>
+    <SolidColorBrush x:Key="AppAccentTintBrush" Color="#264F46E5"/>
     <SolidColorBrush x:Key="GlassSheenBrush" Color="#99FFFFFF"/>
     <SolidColorBrush x:Key="GlassEdgeInnerBrush" Color="#33FFFFFF"/>
     <!-- G3: segmented-control track + "liquid" thumb (light) -->
     <SolidColorBrush x:Key="GlassSegTrackBrush" Color="#14000000"/>
     <SolidColorBrush x:Key="GlassSegThumbBrush" Color="#F2FFFFFF"/>
     <!-- G3: tinted glass buttons (primary / Allow-mint / Block-coral) + their icon+text colours -->
-    <LinearGradientBrush x:Key="GlassPrimaryBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#590067C0" Offset="0"/>
-        <GradientStop Color="#2E0067C0" Offset="1"/>
+    <LinearGradientBrush x:Key="GlassPrimaryBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#E64F46E5" Offset="0"/>
+        <GradientStop Color="#E6B03FE0" Offset="1"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="GlassMintBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#3315803D" Offset="0"/>
@@ -60,7 +60,7 @@
     <SolidColorBrush x:Key="GlassCoralTextBrush" Color="#DC2626"/>
     <SolidColorBrush x:Key="AppOnAllowedBrush" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="AppOnBlockedBrush" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="AppSidebarSelectedBrush" Color="#1A1D6FE0"/>
+    <SolidColorBrush x:Key="AppSidebarSelectedBrush" Color="#1A4F46E5"/>
     <Color x:Key="AppGlowVioletColor">#00000000</Color>
     <Color x:Key="AppGlowVioletMidColor">#00000000</Color>
     <Color x:Key="AppGlowTealMidColor">#00000000</Color>

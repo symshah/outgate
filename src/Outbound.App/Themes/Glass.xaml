@@ -43,8 +43,8 @@
         <Setter Property="Background" Value="{StaticResource GlassBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource GlassEdgeGradient}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="18"/>
-        <Setter Property="Padding" Value="14,12"/>
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Padding" Value="16,14"/>
         <Setter Property="Effect" Value="{DynamicResource GlassCardShadow}"/>
     </Style>
 
@@ -120,12 +120,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="bd" CornerRadius="9" SnapsToDevicePixels="True"
+                    <Border x:Name="bd" CornerRadius="12" SnapsToDevicePixels="True"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource GlassEdgeGradient}" BorderThickness="1"
                             Padding="{TemplateBinding Padding}">
                         <Border.Effect>
-                            <DropShadowEffect Color="#000000" Opacity="0.18" BlurRadius="10" ShadowDepth="1" Direction="270"/>
+                            <DropShadowEffect Color="#000000" Opacity="0.18" BlurRadius="14" ShadowDepth="2" Direction="270"/>
                         </Border.Effect>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
                                           TextElement.Foreground="{TemplateBinding Foreground}"/>
@@ -149,7 +149,7 @@
     <!-- Primary action: accent-tinted glass -->
     <Style x:Key="GlassPrimaryButton" TargetType="Button" BasedOn="{StaticResource GlassButtonBase}">
         <Setter Property="Background" Value="{DynamicResource GlassPrimaryBrush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
     </Style>
 
     <!-- Allow / Approve: mint-tinted glass + mint icon & text -->
